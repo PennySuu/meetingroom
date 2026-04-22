@@ -29,6 +29,15 @@
 
 4. CORS：后端默认允许 `http://localhost:5173`，可通过环境变量 `MEETINGROOM_CORS_ORIGINS` 追加（逗号分隔）。
 
+## Flyway 曾失败时（`Validate failed` / `Detected failed migration`）
+
+`dev` 已开启 **`spring.flyway.repair-on-migrate=true`**，启动时会先 **repair** 再 **migrate**，可清除历史表中的「失败」标记。
+
+若 V1 曾在中间失败且库里**已存在部分表**（例如已有 `app_user` 但没有 `booking`），仅 repair 不够，需要清空后重跑迁移，任选其一：
+
+- **开发库可丢**：在 MySQL 执行 `DROP DATABASE meetingroom;`，再启动后端（会按 JDBC 自动建库并重新迁移）。
+- **保留库名**：删除库内所有业务表及表 **`flyway_schema_history`** 后重启。
+
 ## 构建
 
 - 后端：`cd backend && mvn -DskipTests package`
