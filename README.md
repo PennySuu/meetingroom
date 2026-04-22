@@ -31,7 +31,7 @@
 
 ## Flyway 曾失败时（`Validate failed` / `Detected failed migration`）
 
-`dev` 已开启 **`spring.flyway.repair-on-migrate=true`**，启动时会先 **repair** 再 **migrate**，可清除历史表中的「失败」标记。
+`dev` 下由 **`FlywayDevConfiguration`** 在每次启动时先执行 **`Flyway.repair()`** 再 **`migrate()`**，可清除 `flyway_schema_history` 中的失败标记（`repair-on-migrate` 属性在部分 Flyway 版本下不足以先于校验生效）。
 
 若 V1 曾在中间失败且库里**已存在部分表**（例如已有 `app_user` 但没有 `booking`），仅 repair 不够，需要清空后重跑迁移，任选其一：
 
