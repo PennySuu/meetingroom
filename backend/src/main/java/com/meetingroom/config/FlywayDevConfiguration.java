@@ -1,14 +1,14 @@
-package com.meetingroom.config;
+﻿package com.meetingroom.config;
 
-import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 /**
- * Flyway 在检测到「失败迁移」时会在 {@link Flyway#migrate()} 内置校验阶段直接抛错，
- * {@code repair-on-migrate} 属性未必先于该校验生效。开发环境显式先 {@link Flyway#repair()} 再迁移。
+ * 开发环境下容忍「失败迁移 + 半成品表」：先 repair+migrate，仍失败则 clean+migrate。
+ * 仅 dev 生效，避免影响生产数据。
  */
 @Configuration
 @Profile("dev")
@@ -18,7 +18,17 @@ public class FlywayDevConfiguration {
     public FlywayMigrationStrategy flywayMigrationStrategy() {
         return flyway -> {
             flyway.repair();
-            flyway.migrate();
+            try {
+                flyway.migrate();
+            } catch (FlywayException ex) {
+                String msg = ex.getMessage() == null ? "" : ex.getMessage();
+                if (msg.contains("already exists") || msg.contains("failed migration") || msg.contains("Validate failed")) {
+                    flyway.clean();
+                    flyway.migrate();
+                    return;
+                }
+                throw ex;
+            }
         };
     }
 }
