@@ -4,9 +4,9 @@ spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:meetingroom}?useSSL=false&characterEncoding=utf8&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true
-    username: ${MYSQL_USER:meetingroom}
-    password: ${MYSQL_PASSWORD:meetingroom}
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:meetingroom}?createDatabaseIfNotExist=true&useSSL=false&characterEncoding=utf8&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:1234}
     hikari:
       maximum-pool-size: 20
       leak-detection-threshold: 60000

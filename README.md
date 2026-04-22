@@ -20,6 +20,7 @@
 
 2. 后端（`SPRING_PROFILES_ACTIVE=dev`）：  
    - 进入 `backend/` 执行 `mvn spring-boot:run`  
+   - JDBC 已配置 `createDatabaseIfNotExist=true`，MySQL 用户需具备 **`CREATE`** 权限以便首次连接时自动建库 `meetingroom`；若无权限请先手动执行 `CREATE DATABASE meetingroom CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`  
    - Flyway 会在启动时迁移数据库；默认监听 `http://localhost:8080`。
 
 3. 前端：  
