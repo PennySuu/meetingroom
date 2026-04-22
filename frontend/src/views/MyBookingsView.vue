@@ -17,6 +17,10 @@ const loading = ref(false)
 const loadErr = ref('')
 const cancelTarget = ref<BookingDto | null>(null)
 const cancelling = ref(false)
+const STATUS_LABELS: Record<BookingDto['status'], string> = {
+  ACTIVE: '进行中',
+  CANCELLED: '已取消',
+}
 
 async function loadRooms() {
   rooms.value = await listRooms({})
@@ -88,6 +92,10 @@ function formatRange(b: BookingDto): string {
   return `${s} ~ ${e}`
 }
 
+function statusLabel(status: BookingDto['status']): string {
+  return STATUS_LABELS[status]
+}
+
 onMounted(async () => {
   await loadRooms()
   await load()
@@ -145,7 +153,7 @@ watch(page, load)
         <div class="text-sm text-slate-600">
           会议室 ID {{ b.roomId }} · {{ formatRange(b) }}
         </div>
-        <div class="mt-2 text-xs text-slate-500">状态 {{ b.status }}</div>
+        <div class="mt-2 text-xs text-slate-500">状态 {{ statusLabel(b.status) }}</div>
         <div class="mt-3">
           <button
             v-if="canCancel(b)"

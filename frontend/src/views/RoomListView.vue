@@ -13,6 +13,11 @@ const selectedAmenities = ref<string[]>([])
 
 /** 与种子数据一致，避免筛选结果为空时筛选项消失 */
 const AMENITY_OPTIONS = ['projector', 'whiteboard', 'video'] as const
+const AMENITY_LABELS: Record<string, string> = {
+  projector: '投影仪',
+  whiteboard: '白板',
+  video: '视频会议',
+}
 
 const allAmenityTags = computed(() => {
   const s = new Set<string>(AMENITY_OPTIONS)
@@ -38,6 +43,10 @@ async function load() {
 }
 
 onMounted(load)
+
+function amenityLabel(tag: string) {
+  return AMENITY_LABELS[tag] ?? tag
+}
 
 function toggleAmenity(tag: string) {
   const i = selectedAmenities.value.indexOf(tag)
@@ -75,7 +84,7 @@ function goCalendar(roomId: number) {
               :checked="selectedAmenities.includes(tag)"
               @change="toggleAmenity(tag); load()"
             />
-            {{ tag }}
+            {{ amenityLabel(tag) }}
           </label>
         </div>
       </div>
@@ -107,7 +116,7 @@ function goCalendar(roomId: number) {
               :key="a"
               class="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-700"
             >
-              {{ a }}
+              {{ amenityLabel(a) }}
             </span>
           </div>
         </div>
