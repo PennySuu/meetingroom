@@ -1,0 +1,5 @@
+# 生产：敏感信息仅来自环境变量或密钥管理，禁止默认弱口令
+logging:
+  level:
+    root: INFO
+    com.meetingroom: INFO

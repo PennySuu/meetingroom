@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: meetingroom-api
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:meetingroom}?createDatabaseIfNotExist=true&useSSL=false&characterEncoding=utf8&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:1234}
+    hikari:
+      maximum-pool-size: 20
+      leak-detection-threshold: 60000
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+  session:
+    store-type: redis
+    timeout: 30m
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  servlet:
+    session:
+      cookie:
+        name: MR_SESSION
+        http-only: true
+        same-site: lax
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+meetingroom:
+  auth:
+    pepper: ${AUTH_PEPPER:dev-pepper-change-in-prod}
+  clock-skew-seconds: 30
+  cors:
+    allowed-origins: "${MEETINGROOM_CORS_ORIGINS:http://localhost:5173}"
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/**/*.xml
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

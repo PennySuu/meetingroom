@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meetingroom.booking.BookingMapper">
+
+    <resultMap id="BookingRowMap" type="com.meetingroom.booking.BookingRow">
+        <id column="id" property="id"/>
+        <result column="room_id" property="roomId"/>
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="start_at" property="startAt"/>
+        <result column="end_at" property="endAt"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <select id="countMine" resultType="long">
+        SELECT COUNT(*)
+        FROM booking
+        WHERE user_id = #{userId}
+        <if test="roomId != null">
+            AND room_id = #{roomId}
+        </if>
+        <if test="rangeStart != null and rangeEnd != null">
+            AND start_at &lt; #{rangeEnd}
+            AND end_at &gt; #{rangeStart}
+        </if>
+    </select>
+
+    <select id="findMinePage" resultMap="BookingRowMap">
+        SELECT id, room_id, user_id, title, start_at, end_at, status
+        FROM booking
+        WHERE user_id = #{userId}
+        <if test="roomId != null">
+            AND room_id = #{roomId}
+        </if>
+        <if test="rangeStart != null and rangeEnd != null">
+            AND start_at &lt; #{rangeEnd}
+            AND end_at &gt; #{rangeStart}
+        </if>
+        ORDER BY start_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+</mapper>
